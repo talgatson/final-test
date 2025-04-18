@@ -10,8 +10,8 @@ import cors from "cors";
 const app = express();
 
 const PORT = 8000;
-//const connectionString = process.env.DB_URL;
-const connectionString = "mongodb://127.0.0.1:27017";
+const connectionString = process.env.DB_URL;
+//const connectionString = "mongodb://127.0.0.1:27017";
 
 async function connectDatabase() {
   try {
