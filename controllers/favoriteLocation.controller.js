@@ -1,0 +1,72 @@
+import { FavoriteLocation } from "../models/FavoriteLocation.js";
+
+export const createLocation = async (req, res) => {
+  try {
+    const { city } = req.body;
+    if (!city) {
+      return res.status(400).json({ message: "City is required" });
+    }
+    const existingfavoriteLocation = await FavoriteLocation.findOne({
+      city,
+      user: req.userId,
+    });
+    if (existingfavoriteLocation) {
+      return res.status(409).json({ message: "Location already exists" });
+    }
+    const newLocation = await FavoriteLocation.create({
+      city,
+      user: req.userId,
+    });
+    res.status(201).json(newLocation);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getLocations = async (req, res) => {
+  try {
+    const locations = await FavoriteLocation.find();
+    res.json(locations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+export const updateLocation = async (req, res) => {
+  try {
+    const { city } = req.body;
+    if (!city) {
+      return res.status(400).json({ message: "City is required" });
+    }
+    const newUpdatedLocation = await FavoriteLocation.findOneAndUpdate(
+      { user: req.userId },
+      { city: city },
+      { new: true, runValidators: true, upsert: true }
+    );
+
+    if (!newUpdatedLocation) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+    res.json(newUpdatedLocation);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+export const deleteLocation = async (req, res) => {
+  try {
+    const { city } = req.body;
+    if (!city) {
+      return res.status(400).json({ message: "City is required" });
+    }
+    const deletedLocation = await FavoriteLocation.findOneAndUpdate(
+      { user: req.userId },
+      { city: "" },
+      { new: true }
+    );
+    if (!deletedLocation) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+    res.json({ message: "Location deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

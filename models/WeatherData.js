@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const weatherDataSchema = new mongoose.Schema(
   {
+    location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+      required: true,
+    },
+
     city: { type: String, required: true },
     temperature: { type: Number, required: true },
     humidity: { type: Number, required: true },

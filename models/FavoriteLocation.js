@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const favoriteLocationSchema = new mongoose.Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
-    city: { type: String, required: true },
-    country: { type: String, required: true },
+
+    city: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );
