@@ -25,7 +25,7 @@ export const createLocation = async (req, res) => {
 
 export const getLocations = async (req, res) => {
   try {
-    const locations = await FavoriteLocation.find();
+    const locations = await FavoriteLocation.find({ user: req.userId });
     res.json(locations);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -33,14 +33,20 @@ export const getLocations = async (req, res) => {
 };
 export const updateLocation = async (req, res) => {
   try {
+    const { id } = req.params;
     const { city } = req.body;
+
+    console.log("PATCH /locations/:id");
+    console.log("city:", city);
+    console.log("id:", id);
+
     if (!city) {
       return res.status(400).json({ message: "City is required" });
     }
     const newUpdatedLocation = await FavoriteLocation.findOneAndUpdate(
-      { user: req.userId },
+      { _id: id },
       { city: city },
-      { new: true, runValidators: true, upsert: true }
+      { new: true, runValidators: true }
     );
 
     if (!newUpdatedLocation) {
@@ -57,11 +63,10 @@ export const deleteLocation = async (req, res) => {
     if (!city) {
       return res.status(400).json({ message: "City is required" });
     }
-    const deletedLocation = await FavoriteLocation.findOneAndUpdate(
-      { user: req.userId },
-      { city: "" },
-      { new: true }
-    );
+    const deletedLocation = await FavoriteLocation.findOneAndDelete({
+      user: req.userId,
+      city: city,
+    });
     if (!deletedLocation) {
       return res.status(404).json({ message: "Location not found" });
     }
