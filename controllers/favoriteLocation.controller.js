@@ -36,10 +36,6 @@ export const updateLocation = async (req, res) => {
     const { id } = req.params;
     const { city } = req.body;
 
-    console.log("PATCH /locations/:id");
-    console.log("city:", city);
-    console.log("id:", id);
-
     if (!city) {
       return res.status(400).json({ message: "City is required" });
     }
